@@ -3,23 +3,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const rateLimit = require('express-rate-limit');
 const process = require('process');
 const { errors } = require('celebrate');
-const userController = require('./controllers/users');
-const auth = require('./middlewares/auth');
 const router = require('./routes');
 const { DEFAULT_ERROR_CODE } = require('./utils/constants');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('./middlewares/cors');
-const { validationSignIn, validationSignUp } = require('./middlewares/validation');
+const { limiter } = require('./utils/limiter');
 
-const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb' } = process.env;
+const { PORT, DB_ADDRESS } = process.env;
 
 mongoose
-  .connect('mongodb://localhost:27017/bitfilmsdb')
+  .connect(DB_ADDRESS)
   .then(() => {
-    console.log(`App connected ${DB_URL}`);
+    console.log(`App connected ${DB_ADDRESS}`);
   })
   .catch((err) => console.log(`App error ${err}`));
 
@@ -31,12 +28,6 @@ app.use(helmet());
 
 app.use(express.json());
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: 'draft-7',
-  legacyHeaders: false,
-});
 app.use(limiter);
 
 app.use(cors);
@@ -48,13 +39,6 @@ app.get('/crash-test', () => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-
-app.post('/signin', validationSignIn, userController.login);
-app.post('/signup', validationSignUp, userController.createUser);
-
-app.use(auth);
-
-app.post('/signout', userController.logout);
 
 app.use(router);
 

@@ -5,13 +5,25 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const process = require('process');
 const { errors } = require('celebrate');
+const cors = require('cors');
 const router = require('./routes');
 const { DEFAULT_ERROR_CODE } = require('./utils/constants');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const cors = require('./middlewares/cors');
 const { limiter } = require('./utils/limiter');
 
 const { PORT, DB_ADDRESS } = process.env;
+
+const options = {
+  origin: [
+    '[undefined](http://localhost:3000)',
+    'https://movies-exp.nomoredomainsmonster.ru',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
 
 mongoose
   .connect(DB_ADDRESS)
@@ -30,7 +42,7 @@ app.use(express.json());
 
 app.use(limiter);
 
-app.use(cors);
+app.use(cors(options));
 
 app.use(requestLogger);
 

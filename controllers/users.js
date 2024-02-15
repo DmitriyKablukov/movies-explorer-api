@@ -52,7 +52,7 @@ const login = async (req, res, next) => {
       maxAge: '604800',
       httpOnly: true,
     }).status(STATUS_CODE.OK_CODE)
-      .send({ message: 'Авторизация успешна' });
+      .send({ token, message: 'Авторизация успешна' });
   } catch (err) {
     return next(err);
   }

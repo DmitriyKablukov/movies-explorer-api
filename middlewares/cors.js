@@ -1,6 +1,14 @@
 const allowedCors = [
+  'https://api.movies-exp.nomoredomainsmonster.ru/',
+  'http://api.movies-exp.nomoredomainsmonster.ru/',
+  'https://movies-exp.nomoredomainsmonster.ru/',
+  'http://movies-exp.nomoredomainsmonster.ru/',
+  'http://158.160.132.196',
+  'https://158.160.132.196',
   'http://localhost:3000',
   'http://localhost:3001',
+  'https://localhost:3000',
+  'https://localhost:3001',
 ];
 
 const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';

@@ -5,8 +5,7 @@ const AuthorizationError = require('../errors/AuthorizationError');
 module.exports = (req, res, next) => {
   let payload;
   try {
-    const { authorization } = req.headers;
-    const token = authorization.replace('Bearer ', '');
+    const token = req.cookies.jwt;
     if (!token) {
       return next(new AuthorizationError('Неправильный email или пароль'));
     }
